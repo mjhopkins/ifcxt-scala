@@ -1,11 +1,13 @@
 package ifcxt
 
 import scala.annotation.tailrec
+import scala.collection.immutable.{HashSet, SortedSet, TreeSet}
 import scala.collection.mutable.ListBuffer
 import scala.language.higherKinds
 
-abstract class Demos[IfCxt[T] <: AbstractIfCxt[T]] {
-  def ifCxt[T: IfCxt, A](y: T => A, n: A) = implicitly[IfCxt[T]].ifCxt(y, n)
+abstract class Demos[IfCxt[C] <: AbstractIfCxt[C]] {
+  def ifCxt[C: IfCxt, A](y: C => A, n: A) = implicitly[IfCxt[C]].ifCxt(y, n)
+  def ifCxtEither[C: IfCxt, A, B](y: C => A, n: B): Either[A, B] = implicitly[IfCxt[C]].ifCxt(c => Left(y(c)), Right(n))
 
   def show[A](a: A)(implicit i: IfCxt[Show[A]]) =
     i.ifCxt(_.show(a), "Can't show")
@@ -53,4 +55,13 @@ abstract class Demos[IfCxt[T] <: AbstractIfCxt[T]] {
 
     ns.foldLeft((N.zero, N.zero))(go)._2
   }
+
+  type IfCxtOrdering[A] = IfCxt[Ordering[A]]
+
+  def mkSet[A: IfCxtOrdering](as: A*) =
+    ifCxt[Ordering[A], Set[A]](implicit ord => SortedSet(as: _*), Set(as: _*))
+
+  def mkSetEither[A: IfCxtOrdering](as: A*) =
+    ifCxtEither[Ordering[A], SortedSet[A], Set[A]](implicit ord => SortedSet(as: _*), Set(as: _*))
+
 }
