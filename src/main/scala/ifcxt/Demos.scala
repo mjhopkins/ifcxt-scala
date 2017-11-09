@@ -4,7 +4,7 @@ import scala.annotation.tailrec
 import scala.collection.mutable.ListBuffer
 import scala.language.higherKinds
 
-abstract class IfCxtTests[IfCxt[T] <: AbstractIfCxt[T]] {
+abstract class Demos[IfCxt[T] <: AbstractIfCxt[T]] {
   def ifCxt[T: IfCxt, A](y: T => A, n: A) = implicitly[IfCxt[T]].ifCxt(y, n)
 
   def show[A](a: A)(implicit i: IfCxt[Show[A]]) =

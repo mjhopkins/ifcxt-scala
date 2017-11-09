@@ -14,3 +14,40 @@ Three implementations are provided:
 * `v1` - uses macros
 * `v2` - uses default parameters
 * `v3` - uses a stacked hierarchy of traits
+
+---
+
+## At the REPL 
+
+`sbt console` then 
+
+```
+scala> import ifcxt._; import v1._
+```
+or
+```
+scala> import ifcxt._; import v2._
+```
+or
+```
+scala> import ifcxt._; import v3._
+```
+
+
+
+```
+scala> printSecurely(123456789)
+res0: String = 123456789
+scala> val tfn = TFN(123456789)
+scala> printSecurely(tfn)
+res1: String = 123******
+scala> case class Password(value: String)
+scala> printSecurely(Password("p@55w0rd"))
+res2: String = p@55w0rd
+scala> implicit val passwordIsSecure: Secure[Password] =
+  Secure(_.value.replaceAll(".", "*"))
+scala> printSecurely(Password("p@55w0rd"))
+res3: String = ********
+```
+
+More demos in `ifcxt/Demos.scala`.

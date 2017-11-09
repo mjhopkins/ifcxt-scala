@@ -1,3 +1,3 @@
 package ifcxt
 
-package object v3 extends IfCxtTests[IfCxt]
+package object v3 extends Demos[IfCxt]
